@@ -1,13 +1,16 @@
 import {LoggerInterface} from './logger.interface';
 import pino from 'pino';
+import {injectable} from 'inversify';
 
+@injectable()
 export class LoggerService implements LoggerInterface {
     private logger!: LoggerInterface;
 
     constructor() {
         this.logger = pino({
-            timestamp: true,
-            prettyPrint: true
+            transport: {
+                target: 'pino-pretty'
+            },
         });
         this.logger.info('Logger created.');
     }
