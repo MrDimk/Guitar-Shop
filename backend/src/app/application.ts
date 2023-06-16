@@ -1,20 +1,47 @@
-import {LoggerInterface} from '../common/logger/logger.interface.js';
-import {ConfigInterface} from '../common/config/config.interface.js';
+import 'reflect-metadata';
 import {inject, injectable} from 'inversify';
 import {Component} from '../types/component.types.js';
-import 'reflect-metadata';
+import {LoggerInterface} from '../common/logger/logger.interface.js';
+import {ConfigInterface} from '../common/config/config.interface.js';
 import {DatabaseInterface} from '../common/database-client/database.interface.js';
 import {getURI} from '../utils/db.js';
-import {UserModel} from '../modules/user/user.entity.js';
+import express, {Express} from 'express';
+import {ControllerInterface} from '../common/controller/controller.interface.js';
+import {ExceptionFilterInterface} from '../common/errors/exception-filter.interface.js';
 
 @injectable()
 export class Application {
+    private expressApp: Express;
 
     constructor(
         @inject(Component.LoggerInterface) private logger: LoggerInterface,
         @inject(Component.ConfigInterface) private config: ConfigInterface,
-        @inject(Component.DatabaseInterface) private databaseClient: DatabaseInterface
-    ) {}
+        @inject(Component.DatabaseInterface) private databaseClient: DatabaseInterface,
+        @inject(Component.UserController) private userController: ControllerInterface,
+        @inject(Component.ExceptionFilterInterface) private exceptionFilter: ExceptionFilterInterface,
+        @inject(Component.ProductController) private productController: ControllerInterface
+    ) {
+        this.expressApp = express();
+    }
+
+    public initExceptionFilter() {
+        this.expressApp.use(this.exceptionFilter.catch.bind(this.exceptionFilter));
+    }
+
+    public initRoutes() {
+        this.expressApp.use('/users', this.userController.router);
+        this.expressApp.use('/products', this.productController.router);
+    }
+
+    public initMiddleware() {
+        this.expressApp.use(express.json());
+        // this.expressApp.use(
+        //     '/upload',
+        //     express.static(this.config.get('UPLOAD_DIRECTORY'))
+        // );
+        // const authenticateMiddleware = new AuthenticateMiddleware(this.config.get('JWT_SECRET'));
+        // this.expressApp.use(authenticateMiddleware.execute.bind(authenticateMiddleware));
+    }
 
     public async init() {
         this.logger.info('Application initialization...');
@@ -31,15 +58,10 @@ export class Application {
         this.logger.info(uri);
         await this.databaseClient.connect(uri);
 
-
-        this.logger.info(`DB_Host is ${this.config.get('DB_HOST')}`);
-        this.logger.info(`Salt is ${this.config.get('SALT')}`);
-
-        const user = await UserModel.create({
-            email: 'admin@test.com',
-            name: 'admin'
-        });
-
-        console.log(user);
+        this.initMiddleware();
+        this.initRoutes();
+        this.initExceptionFilter();
+        await this.expressApp.listen(this.config.get('PORT'));
+        this.logger.info(`Server started on http://localhost:${this.config.get('PORT')}`);
     }
 }

@@ -1,28 +1,51 @@
 import {User} from '../../types/user.type.js';
 import {defaultClasses, getModelForClass, ModelOptions, prop} from '@typegoose/typegoose';
+import {createSHA256} from '../../utils/utils.js';
 
 export interface UserEntity extends defaultClasses.Base {}
 
 @ModelOptions({
-    schemaOptions: {
-        collection: 'users'
-    }
+  schemaOptions: {
+    collection: 'users'
+  }
 })
 export class UserEntity extends defaultClasses.TimeStamps implements User {
-    @prop({
-        unique: true,
-        required: true,
-        match: [/^([\w-\\.]+@([\w-]+\.)+[\w-]{2,4})?$/, 'Email is incorrect'],
-    })
-        public email!: string;
+  constructor(data: User) {
+    super();
 
-    @prop({
-        required: true,
-        minlength: [1, 'Min length for name is 2'],
-        maxlength: [15, 'Max length for name is 15']
-    })
-        public name!: string;
+    this.name = data.name;
+    this.email = data.email;
+  }
+
+  @prop({
+    required: true,
+  })
+  public name!: string; //Мин. длина 1 символ, макс. длина 15 символов.
+
+  @prop({
+    unique: true,
+    required: true,
+  })
+  public email!: string; //Валидный адрес электронной почты.
+
+  @prop({
+    required: true,
+    default: ''
+  })
+  private password!: string; //Мин. длина 6 символов, макс. длина 12 символов.
+
+  public setPassword(password: string, salt: string) {
+    this.password = createSHA256(password, salt);
+  }
+
+  public getPassword() {
+    return this.password;
+  }
+
+  public verifyPassword(password: string, salt: string) {
+    const hashPassword = createSHA256(password, salt);
+    return hashPassword === this.password;
+  }
 }
 
 export const UserModel = getModelForClass(UserEntity);
-
