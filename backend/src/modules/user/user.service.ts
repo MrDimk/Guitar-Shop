@@ -5,6 +5,7 @@ import {CreateUserDTO} from './dto/create-user.dto.js';
 import {inject, injectable} from 'inversify';
 import {Component} from '../../types/component.types.js';
 import {LoggerInterface} from '../../common/logger/logger.interface.js';
+import {LoginUserDto} from './dto/login-user.dto.js';
 
 @injectable()
 export class UserService implements UserServiceInterface {
@@ -12,6 +13,10 @@ export class UserService implements UserServiceInterface {
     @inject(Component.LoggerInterface) private readonly logger: LoggerInterface,
     @inject(Component.UserModel) private readonly userModel: types.ModelType<UserEntity>
   ) {}
+
+  public async exists(userId: string): Promise<boolean> {
+    return (await this.userModel.exists({_id: userId})) !== null;
+  }
 
   public async create(dto: CreateUserDTO, salt: string): Promise<DocumentType<UserEntity>> {
     const user = new UserEntity(dto);
@@ -39,5 +44,19 @@ export class UserService implements UserServiceInterface {
     }
 
     return this.create(dto, salt);
+  }
+
+  public async verifyUser(dto: LoginUserDto, salt: string): Promise<DocumentType<UserEntity> | null> {
+    const user = await this.findByEmail(dto.email);
+
+    if (! user) {
+      return null;
+    }
+
+    if (user.verifyPassword(dto.password, salt)) {
+      return user;
+    }
+
+    return null;
   }
 }

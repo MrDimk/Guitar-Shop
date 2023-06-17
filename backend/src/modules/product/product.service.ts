@@ -4,7 +4,7 @@ import {Component} from '../../types/component.types.js';
 import {LoggerInterface} from '../../common/logger/logger.interface.js';
 import {ProductServiceInterface} from './product-service.interface.js';
 import {CreateProductDto} from './dto/create-product.dto.js';
-import {ProductEntity} from './productEntity.js';
+import {ProductEntity} from './product.entity.js';
 import {ProductQuery} from '../../types/product-query.type.js';
 import {PRODUCT_DEFAULT} from './product.const.js';
 import {UpdateProductDto} from './dto/update-product.dto.js';
@@ -15,6 +15,10 @@ export class ProductService implements ProductServiceInterface {
         @inject(Component.LoggerInterface) private readonly logger: LoggerInterface,
         @inject(Component.ProductModel) private readonly productModel: types.ModelType<ProductEntity>
     ) {}
+
+    public async exists(productId: string): Promise<boolean> {
+        return (await this.productModel.exists({_id: productId})) !== null;
+    }
 
     public async create(dto: CreateProductDto): Promise<DocumentType<ProductEntity>> {
 

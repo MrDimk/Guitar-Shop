@@ -11,6 +11,13 @@ import {fillDTO} from '../../utils/utils.js';
 import {ProductServiceInterface} from './product-service.interface.js';
 import {CreateProductDto} from './dto/create-product.dto.js';
 import {ProductRDO} from './rdo/product.rdo.js';
+import {ValidateObjectIdMiddleware} from '../../common/middlewares/validate-objectid.middleware.js';
+import {ValidateDtoMiddleware} from '../../common/middlewares/validate-dto.middleware.js';
+import {UpdateProductDto} from './dto/update-product.dto.js';
+import {DocumentExistsMiddleware} from '../../common/middlewares/document-exists.middleware.js';
+import {UploadFileMiddleware} from '../../common/middlewares/upload-file.middleware.js';
+import {PrivateRouteMiddleware} from '../../common/middlewares/private-route.middleware.js';
+import {ProductShortRDO} from './rdo/product-short.rdo.js';
 
 @injectable()
 export class ProductController extends Controller {
@@ -27,47 +34,59 @@ export class ProductController extends Controller {
             path: '/',
             method: HttpMethod.Post,
             handler: this.create,
-            // middlewares: [
-            //     new PrivateRouteMiddleware(),
-            //     new ValidateDtoMiddleware(CreateMovieDto)
-            // ]
+            middlewares: [
+                new PrivateRouteMiddleware(),
+                new ValidateDtoMiddleware(CreateProductDto),
+            ]
         });
 
         this.addRoute({
             path: '/',
             method: HttpMethod.Get,
-            handler: this.index
+            handler: this.index,
+            middlewares: []
         });
 
         this.addRoute({
             path: '/:productId',
             method: HttpMethod.Patch,
             handler: this.update,
-            // middlewares: [
-            //     new PrivateRouteMiddleware(),
-            //     new ValidateObjectMiddleware('movieId'),
-            //     new ValidateDtoMiddleware(UpdateMovieDto),
-            //     new DocumentExistsMiddleware(this.movieService, 'Movie', 'movieId')
-            // ]
+            middlewares: [
+                new PrivateRouteMiddleware(),
+                new ValidateObjectIdMiddleware('productId'),
+                new DocumentExistsMiddleware(this.productService, 'Product', 'productId'),
+                new ValidateDtoMiddleware(UpdateProductDto),
+            ]
         });
         this.addRoute({
             path: '/:productId',
             method: HttpMethod.Delete,
             handler: this.delete,
-            // middlewares: [
-            //     new PrivateRouteMiddleware(),
-            //     new ValidateObjectMiddleware('movieId'),
-            //     new DocumentExistsMiddleware(this.movieService, 'Movie', 'movieId')
-            // ]
+            middlewares: [
+                new PrivateRouteMiddleware(),
+                new ValidateObjectIdMiddleware('productId'),
+                new DocumentExistsMiddleware(this.productService, 'Product', 'productId'),
+            ]
         });
         this.addRoute({
             path: '/:productId',
             method: HttpMethod.Get,
             handler: this.show,
-            // middlewares: [
-            //     new ValidateObjectMiddleware('movieId'),
-            //     new DocumentExistsMiddleware(this.movieService, 'Movie', 'movieId')
-            // ]
+            middlewares: [
+                new PrivateRouteMiddleware(),
+                new ValidateObjectIdMiddleware('productId'),
+                new DocumentExistsMiddleware(this.productService, 'Product', 'productId'),
+            ]
+        });
+        this.addRoute({
+            path: '/:productId/photo',
+            method: HttpMethod.Post,
+            handler: this.uploadPhoto,
+            middlewares: [
+                new PrivateRouteMiddleware(),
+                new ValidateObjectIdMiddleware('productId'),
+                new UploadFileMiddleware(this.configService.get('UPLOAD_DIRECTORY'), 'photo'),
+            ]
         });
     }
 
@@ -95,7 +114,7 @@ export class ProductController extends Controller {
                 'ProductController'
             );
         }
-        this.ok(res, fillDTO(ProductRDO, result));
+        this.ok(res, fillDTO(ProductShortRDO, result));
     }
 
     public async update({ body, params }: Request, res: Response): Promise<void> {
@@ -111,13 +130,19 @@ export class ProductController extends Controller {
 
     public async show({params}: Request, res: Response): Promise<void> {
         const product = await this.productService.findById(params.productId);
-        if (!product) {
-            throw new HttpError(
-                StatusCodes.NOT_FOUND,
-                `Product with id ${params.productId} not found.`,
-                'ProductController'
-            );
-        }
+        // if (!product) {
+        //     throw new HttpError(
+        //         StatusCodes.NOT_FOUND,
+        //         `Product with id ${params.productId} not found.`,
+        //         'ProductController'
+        //     );
+        // }
         this.ok(res, fillDTO(ProductRDO, product));
+    }
+
+    public async uploadPhoto(req: Request, res: Response) {
+        this.created(res, {
+            filepath: req.file?.path
+        });
     }
 }

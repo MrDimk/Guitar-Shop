@@ -31,9 +31,9 @@ export class ProductEntity extends defaultClasses.TimeStamps {
 
     @prop({
         match: [/^[\w-]+\.(jpg|png)$/i, 'File format is incorrect'],
-        required: true
+        required: false
     })
-    public photo!: string;
+    public photo?: string;
 
     @prop({
         required: true,
@@ -52,4 +52,4 @@ export class ProductEntity extends defaultClasses.TimeStamps {
     public price!: number;
 }
 
-export const TestModel = getModelForClass(ProductEntity);
+export const ProductModel = getModelForClass(ProductEntity);
