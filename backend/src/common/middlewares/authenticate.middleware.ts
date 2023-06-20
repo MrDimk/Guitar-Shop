@@ -10,6 +10,7 @@ export class AuthenticateMiddleware implements MiddlewareInterface {
 
     public async execute(req: Request, _res: Response, next: NextFunction): Promise<void> {
         const authorizationHeader = req.headers?.authorization?.split(' ');
+        console.log(req.headers);
         if (!authorizationHeader) {
             return next();
         }

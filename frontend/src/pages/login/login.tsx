@@ -2,7 +2,7 @@ import {Link} from 'react-router-dom';
 import {useAppDispatch} from '../../hooks';
 import {FormEvent, useRef} from 'react';
 import {UserLoginData} from '../../types/user.types';
-import {loginAction} from '../../store/api-actions';
+import {loginAction, logoutAction} from '../../store/api-actions';
 import {Paths} from '../../const';
 
 export function Login() {

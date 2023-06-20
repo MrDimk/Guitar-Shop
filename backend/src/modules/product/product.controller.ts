@@ -50,9 +50,9 @@ export class ProductController extends Controller {
             path: '/',
             method: HttpMethod.Get,
             handler: this.index,
-            // middlewares: [
-            //     new PrivateRouteMiddleware()
-            // ]
+            middlewares: [
+                new PrivateRouteMiddleware()
+            ]
         });
 
         this.addRoute({
@@ -141,21 +141,10 @@ export class ProductController extends Controller {
 
     public async show({params}: Request, res: Response): Promise<void> {
         const product = await this.productService.findById(params.productId);
-        // if (!product) {
-        //     throw new HttpError(
-        //         StatusCodes.NOT_FOUND,
-        //         `Product with id ${params.productId} not found.`,
-        //         'ProductController'
-        //     );
-        // }
+
         this.ok(res, fillDTO(ProductRDO, product));
     }
 
-    // public async uploadPhoto(req: Request, res: Response) {
-    //     this.created(res, {
-    //         filepath: req.file?.path
-    //     });
-    // }
     public async uploadPhoto(req: Request<core.ParamsDictionary | ParamsGetProduct>, res: Response) {
         const {productId} = req.params;
         const updateDto = { photo: req.file?.filename };

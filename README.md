@@ -16,8 +16,6 @@ The project is not fully completed, and the following tasks are still pending:
 
 Please note that the project is a work in progress, and these tasks need to be addressed to achieve full functionality.
 
-Feel free to copy and paste this translation into your `readme.md` file.
-
 
 ## Project Setup Guide
 
@@ -58,7 +56,7 @@ Then, in a separate terminal, navigate to the `frontend` folder and run the comm
 `npm start`
 
 
-Now, the server and client will be running, and you can access the project in your browser at `http://localhost:3000`.
+Now, the server and client will be running, and you can access the project in your browser at `http://localhost:${PORT}`.
 
 The project setup is complete. You can now start working with the administrative section of the guitar store website.
 

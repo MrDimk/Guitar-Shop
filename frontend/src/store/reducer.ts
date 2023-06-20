@@ -1,7 +1,7 @@
 import {Filters, Products, User} from '../types/types';
 import {AccessType} from '../const';
 import {createReducer} from '@reduxjs/toolkit';
-import {changeFilter, changePage, loadProducts, requireAuthorization, setError} from './actions';
+import {changeFilter, changePage, loadProducts, loadUserData, requireAuthorization, setError} from './actions';
 import {useAppDispatch} from '../hooks';
 import {fetchProductsAction} from './api-actions';
 
@@ -40,7 +40,7 @@ const initialState = {
     sortDir: 1,
   },
   authStatus: AccessType.unknown,
-  user: undefined,
+  user: undefined as User | undefined,
   error: null as string | null,
   isDataLoading: false
 }

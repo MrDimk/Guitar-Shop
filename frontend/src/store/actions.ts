@@ -1,5 +1,5 @@
 import {createAction} from '@reduxjs/toolkit';
-import {Filters, Products} from '../types/types';
+import {Filters, Products, User} from '../types/types';
 import {AccessType, Paths} from '../const';
 
 export const changePage = createAction<number>('products/changePage');
@@ -7,6 +7,7 @@ export const changeFilter = createAction<Filters>('products/changeFilter');
 // export const changeSort = createAction<number>('products/changeSort');
 
 export const requireAuthorization = createAction<AccessType>('user/requireAuthorization');
+export const loadUserData = createAction<User>('user/loadUserData');
 
 export const loadProducts = createAction<Products>('data/loadProducts');
 // export const createProduct = createAction<Product>('data/createProduct');
