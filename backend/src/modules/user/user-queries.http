@@ -6,7 +6,7 @@ Content-Type: application/json
 
 {
   "name": "Dima",
-  "email": "dima@test.ru",
+  "email": "2@2.ru",
   "password": "qwerty123"
 }
 
@@ -25,20 +25,6 @@ Content-Type: application/json
 
 ## Проверка токена пользователя
 GET http://localhost:5555/users/login HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRpbWFAdGVzdC5ydSIsImlkIjoiNjQ4YTBmM2Y5ZTQwNDJmMjVmNTYxZTc5IiwiaWF0IjoxNjg3MDA2MTE1LCJleHAiOjE2ODcxNzg5MTV9.QwzM3tXzgBnzmeUX-bK63NwXLi4EQhOfkkGGRFRj-kw
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRpbWFAdGVzdC5ydSIsImlkIjoiNjQ4YTBmM2Y5ZTQwNDJmMjVmNTYxZTc5IiwiaWF0IjoxNjg3MjIzNTAwLCJleHAiOjE2ODczOTYzMDB9.IMCm-aIXueLCgLnlt7UjWfVlwkUlh4nL7ztfav6AwW8
 
 ###
-
-## Отправка аватарки пользователю
-
-POST http://localhost:1234/users/avatar/63f428f918205c386b8e3c53 HTTP/1.1
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImRpbWFAdGVzdDIucnUiLCJpZCI6IjYzZmJhMzBlY2Q1YjhhMWY2YTk0N2QzMCIsImlhdCI6MTY3NzQzNTY3NywiZXhwIjoxNjc3NjA4NDc3fQ.yEVmqe08wsX5bYdNFJ-Fa1kO4dor9bA6PIwrtCg2lmk
-
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="avatar"; filename="test.jpg"
-Content-Type: image/png
-
-< /Users/mrdimk/Dev/temp/test.jpg
-------WebKitFormBoundary7MA4YWxkTrZu0gW--
-

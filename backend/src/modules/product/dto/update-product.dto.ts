@@ -1,6 +1,6 @@
 import {GuitarType} from '../../../types/guitar-type.enum.js';
 import {PRODUCT_VALIDATION} from '../product.const.js';
-import {IsEnum, IsInt, IsString, Length, Matches, Max, Min} from 'class-validator';
+import {IsEnum, IsInt, IsOptional, IsString, Length, Matches, Max, Min} from 'class-validator';
 
 const {TITLE, DESCRIPTION, ARTICLE, PHOTO, PRICE, GUITAR_TYPE} = PRODUCT_VALIDATION;
 
@@ -13,6 +13,7 @@ export class UpdateProductDto {
     @Length(DESCRIPTION.Min, DESCRIPTION.Max, {message: DESCRIPTION.MessageValid})
     public description?: string;
 
+    @IsOptional()
     @IsString({message: DESCRIPTION.MessageRequired})
     @Matches(/\.(jpg|png)$/, {message: PHOTO.MessageValid})
     public photo?: string;
@@ -24,7 +25,7 @@ export class UpdateProductDto {
     @Length(ARTICLE.Min, ARTICLE.Min, {message: ARTICLE.MessageValid})
     public article?: string;
 
-    public stringCount!: number;
+    public stringCount?: number;
 
     @IsInt({message: PRICE.MessageRequired})
     @Min(PRICE.Min, {message: PRICE.MessageValid})

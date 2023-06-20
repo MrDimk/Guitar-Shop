@@ -6,7 +6,4 @@ export class UserRDO {
 
   @Expose()
   public email!: string ;
-
-  @Expose()
-  public avatar!: string;
 }

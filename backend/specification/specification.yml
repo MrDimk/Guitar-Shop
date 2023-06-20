@@ -5,8 +5,8 @@ info:
 tags:
   - name: users
     description: Actions with users
-  - name: products
-    description: Action with products
+  - name: product-list
+    description: Action with product-list
   - name: auth
     description: Authorisation and authentication proccess
 
@@ -14,8 +14,8 @@ paths:
   /products:
     get:
       tags:
-        - products
-      summary: Get a list of products
+        - product-list
+      summary: Get a list of product-list
       parameters:
         - name: page
           in: query
@@ -59,7 +59,7 @@ paths:
                   $ref: '#/components/schemas/Product'
     post:
       tags:
-        - products
+        - product-list
       summary: Create a new product
       requestBody:
         required: true
@@ -78,7 +78,7 @@ paths:
   /products/{productId}:
     get:
       tags:
-        - products
+        - product-list
       summary: Get product details by ID
       parameters:
         - name: productId
@@ -96,7 +96,7 @@ paths:
                 $ref: '#/components/schemas/Product'
     patch:
       tags:
-        - products
+        - product-list
       summary: Update a product by ID
       parameters:
         - name: productId
@@ -120,7 +120,7 @@ paths:
                 $ref: '#/components/schemas/Product'
     delete:
       tags:
-        - products
+        - product-list
       summary: Delete a product by ID
       parameters:
         - name: productId

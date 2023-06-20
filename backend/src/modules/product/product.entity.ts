@@ -31,9 +31,10 @@ export class ProductEntity extends defaultClasses.TimeStamps {
 
     @prop({
         match: [/^[\w-]+\.(jpg|png)$/i, 'File format is incorrect'],
-        required: false
+        required: true,
+        default: ''
     })
-    public photo?: string;
+    public photo!: string;
 
     @prop({
         required: true,

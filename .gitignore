@@ -1,5 +1,9 @@
 /markup/
 frontend/node_modules/
+frontend/.pnp
+frontend/.pnp.js
+frontend/coverage
+frontend/build
 backend/node_modules/
 backend/dist/
 backend/*mongodb/
@@ -10,3 +14,17 @@ backend/upload/
 *.log
 *.env
 
+# misc
+Thumbs.db
+.DS_Store
+.env
+*.log*
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# editors
+.idea
+*.sublime*
+.vscode

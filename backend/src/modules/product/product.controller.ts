@@ -18,15 +18,21 @@ import {DocumentExistsMiddleware} from '../../common/middlewares/document-exists
 import {UploadFileMiddleware} from '../../common/middlewares/upload-file.middleware.js';
 import {PrivateRouteMiddleware} from '../../common/middlewares/private-route.middleware.js';
 import {ProductShortRDO} from './rdo/product-short.rdo.js';
+import * as core from 'express-serve-static-core';
+import {UploadPhotoRdo} from './rdo/upload-photo.rdo.js';
+
+type ParamsGetProduct = {
+    productId: string;
+}
 
 @injectable()
 export class ProductController extends Controller {
     constructor(
         @inject(Component.LoggerInterface) logger: LoggerInterface,
         @inject(Component.ProductServiceInterface) private readonly productService: ProductServiceInterface,
-        @inject(Component.ConfigInterface) private readonly configService: ConfigInterface,
+        @inject(Component.ConfigInterface) configService: ConfigInterface,
     ) {
-        super(logger);
+        super(logger, configService);
 
         this.logger.info('Register routes for ProductController…');
 
@@ -44,7 +50,9 @@ export class ProductController extends Controller {
             path: '/',
             method: HttpMethod.Get,
             handler: this.index,
-            middlewares: []
+            // middlewares: [
+            //     new PrivateRouteMiddleware()
+            // ]
         });
 
         this.addRoute({
@@ -106,6 +114,8 @@ export class ProductController extends Controller {
     }
 
     public async index({query}: Request, res: Response): Promise<void> {
+        console.log('index method');
+        console.log(query);
         const result = await this.productService.find(query);
         if(!result) {
             throw new HttpError(
@@ -114,6 +124,7 @@ export class ProductController extends Controller {
                 'ProductController'
             );
         }
+        console.log(fillDTO(ProductShortRDO, result));
         this.ok(res, fillDTO(ProductShortRDO, result));
     }
 
@@ -140,9 +151,15 @@ export class ProductController extends Controller {
         this.ok(res, fillDTO(ProductRDO, product));
     }
 
-    public async uploadPhoto(req: Request, res: Response) {
-        this.created(res, {
-            filepath: req.file?.path
-        });
+    // public async uploadPhoto(req: Request, res: Response) {
+    //     this.created(res, {
+    //         filepath: req.file?.path
+    //     });
+    // }
+    public async uploadPhoto(req: Request<core.ParamsDictionary | ParamsGetProduct>, res: Response) {
+        const {productId} = req.params;
+        const updateDto = { photo: req.file?.filename };
+        await this.productService.updateById(productId, updateDto);
+        this.created(res, fillDTO(UploadPhotoRdo, {updateDto}));
     }
 }

@@ -15,7 +15,7 @@ export class CreateProductDto {
 
     @IsString({message: DESCRIPTION.MessageRequired})
     @Matches(/\.(jpg|png)$/, {message: PHOTO.MessageValid})
-    public photo?: string;
+    public photo!: string;
 
     @IsEnum(GuitarType, {message: GUITAR_TYPE.MessageValid})
     public guitarType!: GuitarType;

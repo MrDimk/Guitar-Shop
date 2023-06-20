@@ -6,4 +6,7 @@ export default class LoggedUserRDO {
 
   @Expose()
   public email!: string;
+
+  @Expose()
+  public name!: string;
 }

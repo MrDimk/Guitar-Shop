@@ -8,6 +8,7 @@ import {ProductEntity} from './product.entity.js';
 import {ProductQuery} from '../../types/product-query.type.js';
 import {PRODUCT_DEFAULT} from './product.const.js';
 import {UpdateProductDto} from './dto/update-product.dto.js';
+import {DEFAULT_STATIC_IMAGES} from '../../app/application.const.js';
 
 @injectable()
 export class ProductService implements ProductServiceInterface {
@@ -22,7 +23,7 @@ export class ProductService implements ProductServiceInterface {
 
     public async create(dto: CreateProductDto): Promise<DocumentType<ProductEntity>> {
 
-        const result = await this.productModel.create(dto);
+        const result = await this.productModel.create({...dto, photo: DEFAULT_STATIC_IMAGES[0]});
         this.logger.info(`New test created`);
 
         return result;

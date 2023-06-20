@@ -21,9 +21,9 @@ export class UserController extends Controller {
     constructor(
         @inject(Component.LoggerInterface) logger: LoggerInterface,
         @inject(Component.UserServiceInterface) private readonly userService: UserServiceInterface,
-        @inject(Component.ConfigInterface) private readonly configService: ConfigInterface,
+        @inject(Component.ConfigInterface) configService: ConfigInterface,
     ) {
-        super(logger);
+        super(logger, configService);
 
         this.logger.info('Register routes for UserController…');
 
@@ -54,6 +54,7 @@ export class UserController extends Controller {
         {body}: Request<Record<string, unknown>, Record<string, unknown>, CreateUserDTO>,
         res: Response
     ): Promise<void> {
+        console.log(body);
         const existsUser = await this.userService.findByEmail(body.email);
 
         if (existsUser) {
@@ -90,7 +91,7 @@ export class UserController extends Controller {
             this.configService.get('JWT_SECRET'),
             { email: user.email, id: user.id}
         );
-        this.ok(res, fillDTO(LoggedUserRDO, {email: user.email, token}));
+        this.ok(res, fillDTO(LoggedUserRDO, {email: user.email, name: user.name, token}));
     }
 
     public async checkAuthenticate(req: Request, res: Response): Promise<void> {
